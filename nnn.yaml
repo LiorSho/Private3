@@ -1,0 +1,3 @@
+envVars:
+  GOOGLE_MAPS_API_KEY:
+    value: "AIzaSyBVsZmfkiRFNNMJnPraN_8sBW3Dj-BFFNs"
