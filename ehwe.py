@@ -1,4 +1,4 @@
 algolia: {
-    apiKey: '09a11b10801874df7d226df4f2ce8e8f',
+    apiKey: '',
     indexName: 'shrinerb',
   }
