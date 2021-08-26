@@ -1,5 +1,0 @@
-RL001:
-    name: Merchant IDs
-    or:
-    - pattern: MERK_.*
-    - pattern: MAR_FINDER.*
