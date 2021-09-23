@@ -1,0 +1,40 @@
+# SpectralOPS.io - example for custom rules
+# You are invited to read our detectors engine documentation to learn more about our rules engine capabilities, tricks, and tips. after login to spectral SaaS you can find it in your account in the right menu.
+
+rules:
+- id: ADFR001                               # Unique rule ID
+  name: Adafruit IO API Key                 # Verbal description of the finding
+  tags:
+  # - base                                  # 'base' is our default tag; it will be used in case there isn't any other configuration (see '../spectral.yaml' or use 'spectral local/scan --include-tags=tag1,tag2' for selective tags)
+  - adafruit                                # For running this rule you can run spectral with 'adafruit' tag or uncomment the 'base' tag
+  applies_to:
+  - ".*$"                                   # Scan any file name
+  applies_not_to:
+  - ".*\\.(storyboard|xib)$"                # Ignore some false positive file extensions.
+  severity: error                           # Valid values are 'info', 'warning' and 'error'.
+  pattern_group:
+    patterns:
+    - pattern: "aio_[[:alnum:]]{28,32}"     # Regex pattern of the finding/secret we wish to alert about.
+      pattern_type: multi                   # For each scanned file: single - stop after one finding; multi - find all.
+      test_token:                           # Our token model measures the probability of the finding to be a randomly generated token, and helps us avoid false positive (please read more in our documentation).
+      - on: 0                               # Pattern capturing group number (use 0 for a whole match).
+        score: 0.5                          # The minimum score for accepting the finding as a true positive.
+      test_regex_not:                       # 'test_regex_not' is used to ignore false positive you may find when you just use the secret pattern (please read more in our documentation).
+      - on: 0
+        pattern: "(?i)(example|test|xxxx|1234|abcd)"
+
+- id: PASSWD001
+  name: Password audit
+  tags:
+  # - audit
+  - user-rules
+  applies_to:
+  - ".*$"
+  severity: error
+  pattern_group:         #|--------------- group 0 ---------------|
+    patterns:            #                      |-- group 1 --|
+    - pattern:        "(?i)password\\s*=\\s*[\"]([^\"\r\n]{4,})[\"]"  
+      pattern_type: multi
+      test_tvar:                             # Ignore template variables (please read more in our documentation).
+      - on: 1                                # Pattern capturing group number (use 0 for a whole match).
+        is: false                            # Accept if the finding is not a template variable.
